@@ -1,4 +1,5 @@
 <?php
+
 namespace Prettus\Repository\Traits;
 
 /**
@@ -11,9 +12,9 @@ trait ComparesVersionsTrait
     /**
      * Version compare function that can compare both Laravel and Lumen versions.
      *
-     * @param   string      $frameworkVersion
-     * @param   string      $compareVersion
-     * @param   string|null $operator
+     * @param string $frameworkVersion
+     * @param string $compareVersion
+     * @param string|null $operator
      * @return  mixed
      */
     public function versionCompare($frameworkVersion, $compareVersion, $operator = null)

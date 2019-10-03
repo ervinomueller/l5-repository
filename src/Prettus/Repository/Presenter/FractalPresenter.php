@@ -1,4 +1,5 @@
 <?php
+
 namespace Prettus\Repository\Presenter;
 
 use Exception;
@@ -73,8 +74,7 @@ abstract class FractalPresenter implements PresenterInterface
      */
     protected function parseIncludes()
     {
-
-        $request = app('Illuminate\Http\Request');
+        $request       = app('Illuminate\Http\Request');
         $paramIncludes = config('repository.fractal.params.include', 'include');
 
         if ($request->has($paramIncludes)) {
@@ -156,7 +156,7 @@ abstract class FractalPresenter implements PresenterInterface
     protected function transformPaginator($paginator)
     {
         $collection = $paginator->getCollection();
-        $resource = new Collection($collection, $this->getTransformer(), $this->resourceKeyCollection);
+        $resource   = new Collection($collection, $this->getTransformer(), $this->resourceKeyCollection);
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
 
         return $resource;

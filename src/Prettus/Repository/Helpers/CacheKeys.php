@@ -9,7 +9,6 @@ namespace Prettus\Repository\Helpers;
  */
 class CacheKeys
 {
-
     /**
      * @var string
      */
@@ -54,7 +53,7 @@ class CacheKeys
             self::storeKeys();
         }
 
-        $content = file_get_contents($file);
+        $content    = file_get_contents($file);
         self::$keys = json_decode($content, true);
 
         return self::$keys;
@@ -75,9 +74,9 @@ class CacheKeys
      */
     public static function storeKeys()
     {
-        $file = self::getFileKeys();
+        $file       = self::getFileKeys();
         self::$keys = is_null(self::$keys) ? [] : self::$keys;
-        $content = json_encode(self::$keys);
+        $content    = json_encode(self::$keys);
 
         return file_put_contents($file, $content);
     }
@@ -107,7 +106,7 @@ class CacheKeys
 
         return call_user_func_array([
             $instance,
-            $method
+            $method,
         ], $parameters);
     }
 
@@ -123,7 +122,7 @@ class CacheKeys
 
         return call_user_func_array([
             $instance,
-            $method
+            $method,
         ], $parameters);
     }
 }

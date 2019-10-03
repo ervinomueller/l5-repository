@@ -11,7 +11,6 @@ use Prettus\Repository\Generators\Migrations\SchemaParser;
  */
 class RepositoryInterfaceGenerator extends Generator
 {
-
     /**
      * Get stub name.
      *
@@ -67,7 +66,7 @@ class RepositoryInterfaceGenerator extends Generator
     public function getReplacements()
     {
         return array_merge(parent::getReplacements(), [
-            'fillable' => $this->getFillable()
+            'fillable' => $this->getFillable(),
         ]);
     }
 
@@ -81,6 +80,7 @@ class RepositoryInterfaceGenerator extends Generator
         if (!$this->fillable) {
             return '[]';
         }
+
         $results = '[' . PHP_EOL;
 
         foreach ($this->getSchemaParser()->toArray() as $column => $value) {

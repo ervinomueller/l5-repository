@@ -2,7 +2,6 @@
 namespace Prettus\Repository\Generators;
 
 use Prettus\Repository\Generators\Migrations\RulesParser;
-use Prettus\Repository\Generators\Migrations\SchemaParser;
 
 /**
  * Class ValidatorGenerator
@@ -11,7 +10,6 @@ use Prettus\Repository\Generators\Migrations\SchemaParser;
  */
 class ValidatorGenerator extends Generator
 {
-
     /**
      * Get stub name.
      *
@@ -66,7 +64,6 @@ class ValidatorGenerator extends Generator
      */
     public function getReplacements()
     {
-
         return array_merge(parent::getReplacements(), [
             'rules' => $this->getRules(),
         ]);
@@ -82,6 +79,7 @@ class ValidatorGenerator extends Generator
         if (!$this->rules) {
             return '[]';
         }
+
         $results = '[' . PHP_EOL;
 
         foreach ($this->getSchemaParser()->toArray() as $column => $value) {
@@ -94,7 +92,7 @@ class ValidatorGenerator extends Generator
     /**
      * Get schema parser.
      *
-     * @return SchemaParser
+     * @return RulesParser
      */
     public function getSchemaParser()
     {

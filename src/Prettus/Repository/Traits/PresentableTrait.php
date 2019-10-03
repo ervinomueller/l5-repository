@@ -12,14 +12,13 @@ use Prettus\Repository\Contracts\PresenterInterface;
  */
 trait PresentableTrait
 {
-
     /**
      * @var PresenterInterface
      */
     protected $presenter = null;
 
     /**
-     * @param \Prettus\Repository\Contracts\PresenterInterface $presenter
+     * @param PresenterInterface $presenter
      *
      * @return $this
      */

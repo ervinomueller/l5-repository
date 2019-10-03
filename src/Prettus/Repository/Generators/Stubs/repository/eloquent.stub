@@ -24,9 +24,7 @@ class $CLASS$RepositoryEloquent extends BaseRepository implements $CLASS$Reposit
     {
         return $CLASS$::class;
     }
-
     $VALIDATOR$
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -34,5 +32,4 @@ class $CLASS$RepositoryEloquent extends BaseRepository implements $CLASS$Reposit
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
 }

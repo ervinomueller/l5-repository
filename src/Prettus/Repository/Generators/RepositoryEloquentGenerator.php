@@ -10,7 +10,6 @@ use Prettus\Repository\Generators\Migrations\SchemaParser;
  */
 class RepositoryEloquentGenerator extends Generator
 {
-
     /**
      * Get stub name.
      *
@@ -90,6 +89,7 @@ class RepositoryEloquentGenerator extends Generator
         if (!$this->fillable) {
             return '[]';
         }
+
         $results = '[' . PHP_EOL;
 
         foreach ($this->getSchemaParser()->toArray() as $column => $value) {
@@ -109,6 +109,9 @@ class RepositoryEloquentGenerator extends Generator
         return new SchemaParser($this->fillable);
     }
 
+    /**
+     * @return string
+     */
     public function getValidatorUse()
     {
         $validator = $this->getValidator();
@@ -116,7 +119,9 @@ class RepositoryEloquentGenerator extends Generator
         return "use {$validator};";
     }
 
-
+    /**
+     * @return string
+     */
     public function getValidator()
     {
         $validatorGenerator = new ValidatorGenerator([
@@ -131,19 +136,19 @@ class RepositoryEloquentGenerator extends Generator
             "\\",
             '/'
         ], '\\', $validator) . 'Validator';
-
     }
 
-
+    /**
+     * @return string
+     */
     public function getValidatorMethod()
     {
-        if ($this->validator != 'yes') {
+        if ($this->option('validator') != 'yes') {
             return '';
         }
 
         $class = $this->getClass();
 
-        return '/**' . PHP_EOL . '    * Specify Validator class name' . PHP_EOL . '    *' . PHP_EOL . '    * @return mixed' . PHP_EOL . '    */' . PHP_EOL . '    public function validator()' . PHP_EOL . '    {' . PHP_EOL . PHP_EOL . '        return ' . $class . 'Validator::class;' . PHP_EOL . '    }' . PHP_EOL;
-
+        return PHP_EOL . '    /**' . PHP_EOL . '     * Specify Validator class name' . PHP_EOL . '     *' . PHP_EOL . '     * @return mixed' . PHP_EOL . '     */' . PHP_EOL . '    public function validator()' . PHP_EOL . '    {' . PHP_EOL . '        return ' . $class . 'Validator::class;' . PHP_EOL . '    }' . PHP_EOL;
     }
 }

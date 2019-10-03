@@ -13,14 +13,12 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  */
 class MigrationGenerator extends Generator
 {
-
     /**
      * Get stub name.
      *
      * @var string
      */
     protected $stub = 'migration/plain';
-
 
     /**
      * Get base path of destination file.
@@ -32,7 +30,6 @@ class MigrationGenerator extends Generator
         return base_path() . '/database/migrations/';
     }
 
-
     /**
      * Get destination path for generated file.
      *
@@ -42,7 +39,6 @@ class MigrationGenerator extends Generator
     {
         return $this->getBasePath() . $this->getFileName() . '.php';
     }
-
 
     /**
      * Get generator path config node.
@@ -54,7 +50,6 @@ class MigrationGenerator extends Generator
         return '';
     }
 
-
     /**
      * Get root namespace.
      *
@@ -64,7 +59,6 @@ class MigrationGenerator extends Generator
     {
         return '';
     }
-
 
     /**
      * Get migration name.
@@ -76,7 +70,6 @@ class MigrationGenerator extends Generator
         return strtolower($this->name);
     }
 
-
     /**
      * Get file name.
      *
@@ -86,7 +79,6 @@ class MigrationGenerator extends Generator
     {
         return date('Y_m_d_His_') . $this->getMigrationName();
     }
-
 
     /**
      * Get schema parser.
@@ -98,7 +90,6 @@ class MigrationGenerator extends Generator
         return new SchemaParser($this->fields);
     }
 
-
     /**
      * Get name parser.
      *
@@ -108,7 +99,6 @@ class MigrationGenerator extends Generator
     {
         return new NameParser($this->name);
     }
-
 
     /**
      * Get stub templates.
@@ -125,7 +115,7 @@ class MigrationGenerator extends Generator
             case 'append':
             case 'update':
             case 'insert':
-                $file = 'change';
+                $file         = 'change';
                 $replacements = [
                     'class'       => $this->getClass(),
                     'table'       => $parser->getTable(),
@@ -137,7 +127,7 @@ class MigrationGenerator extends Generator
             case 'delete':
             case 'remove':
             case 'alter':
-                $file = 'change';
+                $file         = 'change';
                 $replacements = [
                     'class'       => $this->getClass(),
                     'table'       => $parser->getTable(),
@@ -146,7 +136,7 @@ class MigrationGenerator extends Generator
                 ];
                 break;
             default:
-                $file = 'create';
+                $file         = 'create';
                 $replacements = [
                     'class'  => $this->getClass(),
                     'table'  => $parser->getTable(),

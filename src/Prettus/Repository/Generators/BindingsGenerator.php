@@ -1,5 +1,8 @@
 <?php
+
 namespace Prettus\Repository\Generators;
+
+use Illuminate\Support\Facades\File;
 
 /**
  * Class BindingsGenerator
@@ -8,7 +11,6 @@ namespace Prettus\Repository\Generators;
  */
 class BindingsGenerator extends Generator
 {
-
     /**
      * The placeholder for repository bindings
      *
@@ -24,13 +26,11 @@ class BindingsGenerator extends Generator
 
     public function run()
     {
-
-
         // Add entity repository binding to the repository service provider
-        $provider = \File::get($this->getPath());
+        $provider            = File::get($this->getPath());
         $repositoryInterface = '\\' . $this->getRepository() . "::class";
-        $repositoryEloquent = '\\' . $this->getEloquentRepository() . "::class";
-        \File::put($this->getPath(), str_replace($this->bindPlaceholder, "\$this->app->bind({$repositoryInterface}, $repositoryEloquent);" . PHP_EOL . '        ' . $this->bindPlaceholder, $provider));
+        $repositoryEloquent  = '\\' . $this->getEloquentRepository() . "::class";
+        File::put($this->getPath(), str_replace($this->bindPlaceholder, "\$this->app->bind({$repositoryInterface}, $repositoryEloquent);" . PHP_EOL . '        ' . $this->bindPlaceholder, $provider));
     }
 
     /**
@@ -77,9 +77,9 @@ class BindingsGenerator extends Generator
         $repository = $repositoryGenerator->getRootNamespace() . '\\' . $repositoryGenerator->getName();
 
         return str_replace([
-            "\\",
-            '/'
-        ], '\\', $repository) . 'Repository';
+                "\\",
+                '/',
+            ], '\\', $repository) . 'Repository';
     }
 
     /**
@@ -96,9 +96,9 @@ class BindingsGenerator extends Generator
         $repository = $repositoryGenerator->getRootNamespace() . '\\' . $repositoryGenerator->getName();
 
         return str_replace([
-            "\\",
-            '/'
-        ], '\\', $repository) . 'RepositoryEloquent';
+                "\\",
+                '/',
+            ], '\\', $repository) . 'RepositoryEloquent';
     }
 
     /**
@@ -118,10 +118,9 @@ class BindingsGenerator extends Generator
      */
     public function getReplacements()
     {
-
         return array_merge(parent::getReplacements(), [
-            'repository' => $this->getRepository(),
-            'eloquent' => $this->getEloquentRepository(),
+            'repository'  => $this->getRepository(),
+            'eloquent'    => $this->getEloquentRepository(),
             'placeholder' => $this->bindPlaceholder,
         ]);
     }

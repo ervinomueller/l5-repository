@@ -2,8 +2,8 @@
 
 namespace Prettus\Repository\Listeners;
 
+use Exception;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Contracts\RepositoryInterface;
@@ -17,7 +17,6 @@ use Prettus\Repository\Helpers\CacheKeys;
  */
 class CleanCacheRepository
 {
-
     /**
      * @var CacheRepository
      */
@@ -38,9 +37,6 @@ class CleanCacheRepository
      */
     protected $action = null;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->cache = app(config('repository.cache.repository', 'cache'));
@@ -52,12 +48,13 @@ class CleanCacheRepository
     public function handle(RepositoryEventBase $event)
     {
         try {
+
             $cleanEnabled = config("repository.cache.clean.enabled", true);
 
             if ($cleanEnabled) {
                 $this->repository = $event->getRepository();
-                $this->model = $event->getModel();
-                $this->action = $event->getAction();
+                $this->model      = $event->getModel();
+                $this->action     = $event->getAction();
 
                 if (config("repository.cache.clean.on.{$this->action}", true)) {
                     $cacheKeys = CacheKeys::getKeys(get_class($this->repository));
@@ -69,8 +66,11 @@ class CleanCacheRepository
                     }
                 }
             }
-        } catch (\Exception $e) {
+
+        } catch (Exception $e) {
+
             Log::error($e->getMessage());
+
         }
     }
 }

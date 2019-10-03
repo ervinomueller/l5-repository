@@ -1,5 +1,8 @@
 <?php
+
 namespace Prettus\Repository\Generators;
+
+use Illuminate\Support\Str;
 
 /**
  * Class ControllerGenerator
@@ -8,7 +11,6 @@ namespace Prettus\Repository\Generators;
  */
 class ControllerGenerator extends Generator
 {
-
     /**
      * Get stub name.
      *
@@ -63,8 +65,7 @@ class ControllerGenerator extends Generator
      */
     public function getControllerName()
     {
-
-        return ucfirst($this->getPluralName());
+        return ucfirst($this->getSingularName());
     }
 
     /**
@@ -74,8 +75,7 @@ class ControllerGenerator extends Generator
      */
     public function getPluralName()
     {
-
-        return str_plural(lcfirst(ucwords($this->getClass())));
+        return Str::plural(lcfirst(ucwords($this->getClass())));
     }
 
     /**
@@ -85,7 +85,6 @@ class ControllerGenerator extends Generator
      */
     public function getReplacements()
     {
-
         return array_merge(parent::getReplacements(), [
             'controller' => $this->getControllerName(),
             'plural'     => $this->getPluralName(),
@@ -103,7 +102,7 @@ class ControllerGenerator extends Generator
      */
     public function getSingularName()
     {
-        return str_singular(lcfirst(ucwords($this->getClass())));
+        return Str::singular(lcfirst(ucwords($this->getClass())));
     }
 
     /**
@@ -120,11 +119,10 @@ class ControllerGenerator extends Generator
         $validator = $validatorGenerator->getRootNamespace() . '\\' . $validatorGenerator->getName();
 
         return 'use ' . str_replace([
-            "\\",
-            '/'
-        ], '\\', $validator) . 'Validator;';
+                "\\",
+                '/',
+            ], '\\', $validator) . 'Validator;';
     }
-
 
     /**
      * Gets repository full class name
@@ -140,8 +138,8 @@ class ControllerGenerator extends Generator
         $repository = $repositoryGenerator->getRootNamespace() . '\\' . $repositoryGenerator->getName();
 
         return 'use ' . str_replace([
-            "\\",
-            '/'
-        ], '\\', $repository) . 'Repository;';
+                "\\",
+                '/',
+            ], '\\', $repository) . 'Repository;';
     }
 }

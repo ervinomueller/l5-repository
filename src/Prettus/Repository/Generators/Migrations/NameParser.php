@@ -1,4 +1,5 @@
 <?php
+
 namespace Prettus\Repository\Generators\Migrations;
 
 /**
@@ -14,12 +15,14 @@ class NameParser
      * @var string
      */
     protected $name;
+
     /**
      * The array data.
      *
      * @var array
      */
     protected $data = [];
+
     /**
      * The available schema actions.
      *
@@ -28,22 +31,22 @@ class NameParser
     protected $actions = [
         'create' => [
             'create',
-            'make'
+            'make',
         ],
         'delete' => [
             'delete',
-            'remove'
+            'remove',
         ],
         'add'    => [
             'add',
             'update',
             'append',
-            'insert'
+            'insert',
         ],
         'drop'   => [
             'destroy',
-            'drop'
-        ]
+            'drop',
+        ],
     ];
 
     /**

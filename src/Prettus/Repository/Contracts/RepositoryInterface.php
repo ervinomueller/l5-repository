@@ -1,5 +1,8 @@
 <?php
+
 namespace Prettus\Repository\Contracts;
+
+use Closure;
 
 /**
  * Interface RepositoryInterface
@@ -8,7 +11,6 @@ namespace Prettus\Repository\Contracts;
  */
 interface RepositoryInterface
 {
-
     /**
      * Retrieve data array for populate field select
      *
@@ -165,12 +167,12 @@ interface RepositoryInterface
     /**
      * Update or Create an entity in repository
      *
-     * @throws ValidatorException
-     *
      * @param array $attributes
      * @param array $values
      *
      * @return mixed
+     * @throws ValidatorException
+     *
      */
     public function updateOrCreate(array $attributes, array $values = []);
 
@@ -206,7 +208,7 @@ interface RepositoryInterface
      * Load relation with closure
      *
      * @param string $relation
-     * @param closure $closure
+     * @param Closure $closure
      *
      * @return $this
      */
@@ -215,7 +217,7 @@ interface RepositoryInterface
     /**
      * Add subselect queries to count the relations.
      *
-     * @param  mixed $relations
+     * @param mixed $relations
      * @return $this
      */
     public function withCount($relations);
@@ -241,11 +243,11 @@ interface RepositoryInterface
     /**
      * Query Scope
      *
-     * @param \Closure $scope
+     * @param Closure $scope
      *
      * @return $this
      */
-    public function scopeQuery(\Closure $scope);
+    public function scopeQuery(Closure $scope);
 
     /**
      * Reset Query Scope

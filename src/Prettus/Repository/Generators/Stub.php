@@ -15,12 +15,14 @@ class Stub
      * @var null|string
      */
     protected static $basePath = null;
+
     /**
      * The stub path.
      *
      * @var string
      */
     protected $path;
+
     /**
      * The replacements array.
      *
@@ -32,19 +34,19 @@ class Stub
      * The contructor.
      *
      * @param string $path
-     * @param array  $replaces
+     * @param array $replaces
      */
     public function __construct($path, array $replaces = [])
     {
-        $this->path = $path;
+        $this->path     = $path;
         $this->replaces = $replaces;
     }
 
     /**
      * Create new self instance.
      *
-     * @param  string $path
-     * @param  array  $replaces
+     * @param string $path
+     * @param array $replaces
      *
      * @return self
      */
@@ -56,7 +58,7 @@ class Stub
     /**
      * Set base path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return void
      */
@@ -68,7 +70,7 @@ class Stub
     /**
      * Set replacements array.
      *
-     * @param  array $replaces
+     * @param array $replaces
      *
      * @return $this
      */
@@ -117,6 +119,7 @@ class Stub
     public function getContents()
     {
         $contents = file_get_contents($this->getPath());
+
         foreach ($this->replaces as $search => $replace) {
             $contents = str_replace('$' . strtoupper($search) . '$', $replace, $contents);
         }

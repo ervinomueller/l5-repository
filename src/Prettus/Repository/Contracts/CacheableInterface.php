@@ -1,4 +1,5 @@
 <?php
+
 namespace Prettus\Repository\Contracts;
 
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -42,7 +43,6 @@ interface CacheableInterface
      * @return int
      */
     public function getCacheMinutes();
-
 
     /**
      * Skip Cache
