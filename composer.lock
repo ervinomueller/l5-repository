@@ -734,8 +734,8 @@
             "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
-                    "name": "Anderson Andrade",
-                    "email": "contato@andersonandra.de"
+                    "name": "Ervino Mueller",
+                    "email": "ervinomueller@outlook.com"
                 }
             ],
             "description": "Laravel Validation Service",
