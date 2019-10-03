@@ -2,7 +2,7 @@
 
 $NAMESPACE$
 
-use League\Fractal\TransformerAbstract;
+use Prettus\Repository\Transformer\AbstractTransformer;
 use $MODEL$;
 
 /**
@@ -10,7 +10,7 @@ use $MODEL$;
  *
  * @package $NAMESPACE$
  */
-class $CLASS$Transformer extends TransformerAbstract
+class $CLASS$Transformer extends AbstractTransformer
 {
     /**
      * Transform the $CLASS$ entity.
@@ -22,12 +22,12 @@ class $CLASS$Transformer extends TransformerAbstract
     public function transform($CLASS$ $model)
     {
         return [
-            'id'         => (int) $model->id,
+           'id'         => (int)$model->id,
 
-            /* place your other model properties here */
+           /* place your other model properties here */
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
-        ];
+           'created_at' => $model->created_at,
+           'updated_at' => $model->updated_at
+       ];
     }
 }
