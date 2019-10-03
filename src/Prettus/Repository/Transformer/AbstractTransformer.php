@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
+use League\Fractal\TransformerAbstract;
 
 /**
  * Class AbstractTransformer
@@ -13,7 +14,7 @@ use League\Fractal\Resource\NullResource;
  * @package Prettus\Repository\Transformer
  * @author Ervino Mueller <ervinomueller@outlook.com>
  */
-abstract class AbstractTransformer
+abstract class AbstractTransformer extends TransformerAbstract
 {
     /**
      * @param $data
