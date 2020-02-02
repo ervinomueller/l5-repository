@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
+use Prettus\Repository\Exceptions\RequestException;
 
 /**
  * Class RequestCriteria
@@ -263,7 +264,7 @@ class RequestCriteria implements CriteriaInterface
             }
 
             if (count($fields) == 0) {
-                throw new Exception(trans('repository::criteria.fields_not_accepted', ['field' => implode(',', $searchFields)]));
+                throw new RequestException(trans('repository::criteria.fields_not_accepted', ['field' => implode(',', $searchFields)]));
             }
 
         }
