@@ -5,6 +5,7 @@ namespace Prettus\Repository\Eloquent;
 use Closure;
 use Exception;
 use Illuminate\Container\Container as Application;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -86,8 +87,14 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     protected $scopeQuery = null;
 
     /**
+     * @var bool
+     */
+    private $originalParserResult = false;
+
+    /**
      * @param Application $app
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public function __construct(Application $app)
     {
@@ -108,6 +115,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * @throws BindingResolutionException
      * @throws RepositoryException
      */
     public function resetModel()
@@ -163,6 +171,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      *
      * @return $this
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public function setPresenter($presenter)
     {
@@ -174,6 +183,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * @return Model
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public function makeModel()
     {
@@ -191,6 +201,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      *
      * @return PresenterInterface
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public function makePresenter($presenter = null)
     {
@@ -213,6 +224,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * @param null $validator
      *
      * @return null|ValidatorInterface
+     * @throws BindingResolutionException
      * @throws RepositoryException
      */
     public function makeValidator($validator = null)
@@ -262,7 +274,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * @param string $column
      * @param string|null $key
      *
-     * @return \Illuminate\Support\Collection|array
+     * @return Collection|array
      */
     public function lists($column, $key = null)
     {
@@ -277,7 +289,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * @param string $column
      * @param string|null $key
      *
-     * @return \Illuminate\Support\Collection|array
+     * @return Collection|array
      */
     public function pluck($column, $key = null)
     {
@@ -397,6 +409,26 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         $this->resetModel();
 
         return $this->parserResult($results);
+    }
+
+    /**
+     * Find data by field and value
+     *
+     * @param       $field
+     * @param       $value
+     * @param array $columns
+     *
+     * @return mixed
+     * @throws RepositoryException
+     */
+    public function firstByField($field, $value = null, $columns = ['*'])
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+        $model = $this->model->where($field, '=', $value)->first($columns);
+        $this->resetModel();
+
+        return $this->parserResult($model);
     }
 
     /**
@@ -641,7 +673,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
                 $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
             } else {
                 $model = $this->model->newInstance()->forceFill($attributes);
-                $model->addVisible($this->model->getHidden());
+                $model->makeVisible($this->model->getHidden());
                 $attributes = $model->toArray();
             }
 
@@ -653,6 +685,51 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         $this->resetModel();
 
         event(new RepositoryEntityCreated($this, $model));
+
+        return $this->parserResult($model);
+    }
+
+    /**
+     * @param array $attributes
+     * @param $field
+     * @param $value
+     * @return mixed
+     * @throws RepositoryException
+     * @throws ValidatorException
+     */
+    public function updateByField(array $attributes, $field, $value)
+    {
+        $this->applyScope();
+
+        $model = $this->model->where($field, $value)->first();
+        $id    = $model->id;
+
+        if (!is_null($this->validator)) {
+            // we should pass data that has been casts by the model
+            // to make sure data type are same because validator may need to use
+            // this data to compare with data that fetch from database.
+            if ($this->versionCompare($this->app->version(), "5.2.*", ">")) {
+                $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
+            } else {
+                $model = $this->model->newInstance()->forceFill($attributes);
+                $model->addVisible($this->model->getHidden());
+                $attributes = $model->toArray();
+            }
+
+            $this->validator->with($attributes)->setId($id)->passesOrFail(ValidatorInterface::RULE_UPDATE);
+        }
+
+        $temporarySkipPresenter = $this->skipPresenter;
+
+        $this->skipPresenter(true);
+
+        $model->fill($attributes);
+        $model->save();
+
+        $this->skipPresenter($temporarySkipPresenter);
+        $this->resetModel();
+
+        event(new RepositoryEntityUpdated($this, $model));
 
         return $this->parserResult($model);
     }
@@ -679,7 +756,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
                 $attributes = $this->model->newInstance()->forceFill($attributes)->makeVisible($this->model->getHidden())->toArray();
             } else {
                 $model = $this->model->newInstance()->forceFill($attributes);
-                $model->addVisible($this->model->getHidden());
+                $model->makeVisible($this->model->getHidden());
                 $attributes = $model->toArray();
             }
 
@@ -1070,6 +1147,20 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Skip Validator Wrapper
+     *
+     * @param bool $status
+     *
+     * @return $this
+     */
+    public function skipValidator($status = true)
+    {
+        $this->skipPresenter = $status;
+
+        return $this;
+    }
+
+    /**
      * Wrapper result data
      *
      * @param mixed $result
@@ -1078,6 +1169,10 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      */
     public function parserResult($result)
     {
+        if (!$this->originalParserResult && $this->skipPresenter && $result instanceof Arrayable) {
+            return $result->toArray();
+        }
+
         if ($this->presenter instanceof PresenterInterface) {
             if ($result instanceof Collection || $result instanceof LengthAwarePaginator) {
                 $result->each(function ($model) {
@@ -1107,6 +1202,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      *
      * @return mixed
      * @throws RepositoryException
+     * @throws BindingResolutionException
      */
     public static function __callStatic($method, $arguments)
     {
@@ -1117,7 +1213,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * Trigger method calls to the model
      *
      * @param string $method
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return mixed
      */

@@ -3,11 +3,15 @@
 namespace Prettus\Repository\Contracts;
 
 use Closure;
+use Illuminate\Support\Collection;
+use Prettus\Repository\Exceptions\RepositoryException;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 /**
  * Interface RepositoryInterface
  * @package Prettus\Repository\Contracts
  * @author Anderson Andrade <contato@andersonandra.de>
+ * @author Ervino Mueller <ervinomueller@outlook.com>
  */
 interface RepositoryInterface
 {
@@ -17,7 +21,7 @@ interface RepositoryInterface
      * @param string $column
      * @param string|null $key
      *
-     * @return \Illuminate\Support\Collection|array
+     * @return Collection|array
      */
     public function lists($column, $key = null);
 
@@ -27,7 +31,7 @@ interface RepositoryInterface
      * @param string $column
      * @param string|null $key
      *
-     * @return \Illuminate\Support\Collection|array
+     * @return Collection|array
      */
     public function pluck($column, $key = null);
 
@@ -153,6 +157,16 @@ interface RepositoryInterface
      * @return mixed
      */
     public function create(array $attributes);
+
+    /**
+     * @param array $attributes
+     * @param $field
+     * @param $value
+     * @return mixed
+     * @throws RepositoryException
+     * @throws ValidatorException
+     */
+    public function updateByField(array $attributes, $field, $value);
 
     /**
      * Update a entity in repository by id
@@ -282,6 +296,27 @@ interface RepositoryInterface
     public function skipPresenter($status = true);
 
     /**
+     * Skip Validator Wrapper
+     *
+     * @param bool $status
+     *
+     * @return $this
+     */
+    public function skipValidator($status = true);
+
+    /**
+     * Find data by field and value
+     *
+     * @param       $field
+     * @param       $value
+     * @param array $columns
+     *
+     * @return mixed
+     * @throws RepositoryException
+     */
+    public function firstByField($field, $value = null, $columns = ['*']);
+
+    /**
      * Retrieve first data of repository, or return new Entity
      *
      * @param array $attributes
@@ -313,7 +348,7 @@ interface RepositoryInterface
      * Trigger method calls to the model
      *
      * @param string $method
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return mixed
      */
