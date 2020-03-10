@@ -90,7 +90,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     /**
      * @var bool
      */
-    private $originalParserResult = false;
+    protected $originalParserResult = false;
 
     /**
      * @param Application $app
@@ -182,6 +182,20 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Set Original Parser Result
+     *
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function setOriginalParserResult(bool $bool)
+    {
+        $this->originalParserResult = $bool;
+
+        return $this;
+    }
+
+    /**
      * @return Model
      * @throws RepositoryException
      * @throws BindingResolutionException
@@ -253,6 +267,16 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     public function getFieldsSearchable()
     {
         return $this->fieldSearchable;
+    }
+
+    /**
+     * Get original parser result
+     *
+     * @return bool
+     */
+    public function getOriginalParserResult()
+    {
+        return $this->originalParserResult;
     }
 
     /**
